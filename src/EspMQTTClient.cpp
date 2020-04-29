@@ -404,9 +404,6 @@ void EspMQTTClient::connectToWifi()
 // Try to connect to the MQTT broker and return True if the connection is successfull (blocking)
 void EspMQTTClient::connectToMqttBroker()
 {
-  if (_enableSerialLogs)
-    Serial.printf("MQTT: Connecting to broker @%s with client name \"@%s\" ... ", _mqttServerIp, _mqttClientName);
-
 //pj added April 26
 	uint8_t baseMac[6];
 	esp_read_mac(baseMac, ESP_MAC_WIFI_STA);		// Get MAC address for WiFi station
@@ -414,8 +411,11 @@ void EspMQTTClient::connectToMqttBroker()
 	sprintf(baseMacChr, "%02X%02X%02X%02X%02X%02X", baseMac[0], baseMac[1], baseMac[2], baseMac[3], baseMac[4], baseMac[5]);       // Example: B4E62DA8EF6D
 	const char*  _mqttClientName_PJ = (char*)baseMacChr;
 	_mqttClientName =  _mqttClientName_PJ;
-	
 //end pj added April 26
+	
+	
+  if (_enableSerialLogs)
+    Serial.printf("MQTT: Connecting to broker @%s with client name \"@%s\" ... ", _mqttServerIp, _mqttClientName);
 
   bool success = _mqttClient.connect(_mqttClientName, _mqttUsername, _mqttPassword, _mqttLastWillTopic, 0, _mqttLastWillRetain, _mqttLastWillMessage, _mqttCleanSession);
 
