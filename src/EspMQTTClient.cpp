@@ -93,6 +93,12 @@ void EspMQTTClient::enableDebuggingMessages(const bool enabled)
   _enableSerialLogs = enabled;
 }
 
+void EspMQTTClient::enableMACaddress_for_ClientName(const bool enabled)
+{
+  _enableMACaddress = enabled;
+}
+
+
 void EspMQTTClient::enableHTTPWebUpdater(const char* username, const char* password, const char* address)
 {
   if (_httpServer == NULL)
@@ -405,6 +411,8 @@ void EspMQTTClient::connectToWifi()
 void EspMQTTClient::connectToMqttBroker()
 {
 //pj added April 26
+
+if (_enableMACaddress) {
 	uint8_t baseMac[6];
 	esp_read_mac(baseMac, ESP_MAC_WIFI_STA);		// Get MAC address for WiFi station
 	char baseMacChr[13] = {0};
@@ -412,6 +420,7 @@ void EspMQTTClient::connectToMqttBroker()
 	const char*  _mqttClientName_PJ = (char*)baseMacChr;
 	_mqttClientName =  _mqttClientName_PJ;
 //end pj added April 26
+}
 	
 	
   if (_enableSerialLogs)
