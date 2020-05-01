@@ -432,6 +432,7 @@ if (_enableMACaddress) {
 	sprintf(baseMacChr, "%02X%02X%02X%02X%02X%02X", baseMac[0], baseMac[1], baseMac[2], baseMac[3], baseMac[4], baseMac[5]);       // Example: B4E62DA8EF6D
 	const char*  _mqttClientName_PJ = (char*)baseMacChr;
 	_mqttClientName =  _mqttClientName_PJ;
+	
 //end pj added April 26
 }
 if (_enableAuthentication) {	
@@ -488,19 +489,37 @@ static const auto PASSPHRASE        = "idle scrub portion party limb unit unveil
     messageToSign.sign(msg, PASSPHRASE);
     const auto signatureString = BytesToHex(messageToSign.signature);
 	//_mqttPassword = (char*)signatureString.c_str();
+
+	const char* _mqttPassword_PJauth;
 	
-	//_mqttPassword = signatureString.c_str();
-	//_mqttPassword = (char*)signatureString;
+	_mqttPassword_PJauth = signatureString.c_str();
+	
+	char passwordTemp[200];
+
+	strcpy(passwordTemp,_mqttPassword_PJauth);
 
 	_mqttUsername = ArkPublicKey;
 	Serial.print("username: ");	
 	Serial.println(ArkPublicKey);	
 
 	
-	const char*  _mqttPassword_PJ = (char*)signatureString.c_str();
-	_mqttPassword =  _mqttPassword_PJ;
+//	const char*  _mqttPassword_PJ = (char*)signatureString.c_str();
+//	_mqttPassword = (char*)signatureString.c_str();
+
+
+//strcpy(s2, s1.c_str());
+	
+	_mqttPassword = passwordTemp;
+	
+	//_mqttPassword = (char*)signatureString.c_str();
 	Serial.print("password: ");	
 	Serial.println(_mqttPassword);	
+	
+	//_mqttPassword
+	
+//	_mqttPassword =  "304402201ccc8c75501173afb99d7736b443910c68df2ee22d6cb19570f4cc4fbfcf52d502202f7947af03e49e8476ce61af9f0d1b3e52ef5f5afe9781483d77d04510919e9a";
+
+//May 01 08:48:29 vultr.guest python3[2911]: [2020-05-01 08:48:29,331] :: DEBUG - <-in-- ConnectPacket(ts=2020-05-01 08:48:29.330486, fixed=MQTTFixedHeader(length=135, flags=0x0), variable=ConnectVariableHeader(proto_name=MQIsdp, proto_level=3, flags=0xc6, keepalive=15), payload=ConnectVariableHeader(client_id=2020-05-01T08:48B4E62DA8EF6D, will_topic=IOT/lastwill, will_message=b'Goodbye', username=03850f049eb4f13841ab805be51dfeed1b4e40ccadb6f82874dddcfd6cf58db325, password=))
 
  
 
@@ -517,7 +536,7 @@ static const auto PASSPHRASE        = "idle scrub portion party limb unit unveil
 	
 	
   if (_enableSerialLogs)
-    Serial.printf("MQTT: Connecting to broker @%s with client name \"@%s\"@%s\" ... ", _mqttServerIp, _mqttClientName, _mqttUsername);
+    Serial.printf("MQTT: Connecting to broker @%s with password  \"@%s\" ... ", _mqttServerIp, _mqttPassword);
 
   bool success = _mqttClient.connect(_mqttClientName, _mqttUsername, _mqttPassword, _mqttLastWillTopic, 0, _mqttLastWillRetain, _mqttLastWillMessage, _mqttCleanSession);
 

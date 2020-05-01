@@ -70,6 +70,7 @@ private:
   char* _mqttLastWillMessage;
   bool _mqttLastWillRetain;
 
+
   PubSubClient _mqttClient;
 
   struct TopicSubscriptionRecord {
