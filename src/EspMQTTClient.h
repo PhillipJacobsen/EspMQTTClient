@@ -3,6 +3,16 @@
 
 #include <PubSubClient.h>
 
+#include <arkCrypto.h>
+#include <arkCrypto_esp32.h>  // This is a helper header that includes all the Misc ARK C++ Crypto headers required for this sketch
+#include <arkClient.h>
+using namespace Ark::Crypto;
+using namespace Ark::Crypto::identities;
+using namespace Ark::Crypto::transactions;
+
+
+
+
 #ifdef ESP8266
 
   #include <ESP8266WiFi.h>
@@ -89,6 +99,10 @@ private:
   ConnectionEstablishedCallback _connectionEstablishedCallback;
   bool _enableSerialLogs;
   bool _enableMACaddress;
+  bool _enableAuthentication;
+  bool _enableMQTTConnect;
+	  
+	  
   unsigned int _connectionEstablishedCount; // Incremented before each _connectionEstablishedCallback call
 
 public:
@@ -134,8 +148,9 @@ public:
   void enableLastWillMessage(const char* topic, const char* message, const bool retain = false); // Must be set before the first loop() call.
 
   // Optional PJ's functionality
-  void enableMACaddress_for_ClientName(const bool enabled = true); // Allow to display useful debugging messages. Can be set to false to disable them during program execution
-
+  void enableMACaddress_for_ClientName(const bool enabled = true); 
+  void enableCustomAuthentication(const bool enabled = true); 
+  void enableMQTTConnect(const bool enabled = true); 
 
   // Main loop, to call at each sketch loop()
   void loop();

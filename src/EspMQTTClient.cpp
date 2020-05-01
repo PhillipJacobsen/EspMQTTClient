@@ -98,6 +98,15 @@ void EspMQTTClient::enableMACaddress_for_ClientName(const bool enabled)
   _enableMACaddress = enabled;
 }
 
+void EspMQTTClient::enableCustomAuthentication(const bool enabled)
+{
+  _enableAuthentication = enabled;
+}
+
+void EspMQTTClient::enableMQTTConnect(const bool enabled)
+{
+  _enableMQTTConnect = enabled;
+}
 
 void EspMQTTClient::enableHTTPWebUpdater(const char* username, const char* password, const char* address)
 {
@@ -218,7 +227,11 @@ void EspMQTTClient::loop()
   {
     if (millis() - _lastMqttConnectionAttemptMillis > MQTT_CONNECTION_RETRY_DELAY || _lastMqttConnectionAttemptMillis == 0)
     {
-      connectToMqttBroker();
+      if (_enableMQTTConnect) {
+		connectToMqttBroker();  
+	  }
+	  
+	  
       _lastMqttConnectionAttemptMillis = millis();
     }
   }
@@ -421,10 +434,90 @@ if (_enableMACaddress) {
 	_mqttClientName =  _mqttClientName_PJ;
 //end pj added April 26
 }
+if (_enableAuthentication) {	
+//clientID = 
+//username = public Key
+//password = message signature
+//message = clientID | ISO UTC time (16 digits)
+// https://www.utctime.net/
+
+  time_t now = time(nullptr);   //get current time
+  time(&now);
+  char ISOtime[sizeof "2011-10-08T07:07"];
+  strftime(ISOtime, sizeof ISOtime, "%Y-%m-%dT%H:%M", gmtime(&now));
+  Serial.println("ISO time");
+  Serial.println(now);
+  Serial.println(ISOtime);
+
+  Serial.println("step1");
+
+    char msg[400];
+  Serial.println("step2");
+
+    strcpy(msg,ISOtime);
+  Serial.println("step3");
+  Serial.println(msg);
+
+char temp[20];
+ //strcpy(temp,_mqttClientName);
+ strcpy(temp,"B4E62DA8EF6D");
+
+ 
+//const char*  temp = (char*)_mqttClientName;
+//    Serial.println("step4");
+//   Serial.println(temp);
+//  delay(2);	 	
+ 
+ 
+ 
+	strcat(msg,temp);
+  Serial.println("step5");
+  delay(2);	 	
+ 
+
+  Serial.println("message");
+  Serial.println(msg);
+
+const char* ArkPublicKey = "03850f049eb4f13841ab805be51dfeed1b4e40ccadb6f82874dddcfd6cf58db325";       
+static const auto PASSPHRASE        = "idle scrub portion party limb unit unveil wash tragic lyrics demand trick";  //TRXA2NUACckkYwWnS9JRkATQA453ukAcD1
+//1stubby@
+//AcjpFwKE5ixDMtsHaQysY7BVNWthCve7BV
+
+      //sign the packet using Private Key
+    Message messageToSign;
+    messageToSign.sign(msg, PASSPHRASE);
+    const auto signatureString = BytesToHex(messageToSign.signature);
+	//_mqttPassword = (char*)signatureString.c_str();
+	
+	//_mqttPassword = signatureString.c_str();
+	//_mqttPassword = (char*)signatureString;
+
+	_mqttUsername = ArkPublicKey;
+	Serial.print("username: ");	
+	Serial.println(ArkPublicKey);	
+
+	
+	const char*  _mqttPassword_PJ = (char*)signatureString.c_str();
+	_mqttPassword =  _mqttPassword_PJ;
+	Serial.print("password: ");	
+	Serial.println(_mqttPassword);	
+
+ 
+
+ 
+ 
+	
+ //     buf += F(",\"sig\":");
+ //     buf += F("\"");
+ //     buf += signatureString.c_str();   //append the signature
+
+}
+	
+	
 	
 	
   if (_enableSerialLogs)
-    Serial.printf("MQTT: Connecting to broker @%s with client name \"@%s\" ... ", _mqttServerIp, _mqttClientName);
+    Serial.printf("MQTT: Connecting to broker @%s with client name \"@%s\"@%s\" ... ", _mqttServerIp, _mqttClientName, _mqttUsername);
 
   bool success = _mqttClient.connect(_mqttClientName, _mqttUsername, _mqttPassword, _mqttLastWillTopic, 0, _mqttLastWillRetain, _mqttLastWillMessage, _mqttCleanSession);
 
