@@ -62,8 +62,8 @@ private:
   unsigned long _lastMqttConnectionAttemptMillis;
   const char* _mqttServerIp;
   const char* _mqttUsername;
-  const char* _mqttPassword;
-  const char* _mqttClientName;
+  const char* _mqttPassword;		//*****
+  const char* _mqttClientName;		//*****
   const short _mqttServerPort;
   bool _mqttCleanSession;
   char* _mqttLastWillTopic;

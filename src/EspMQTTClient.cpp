@@ -430,8 +430,16 @@ if (_enableMACaddress) {
 	esp_read_mac(baseMac, ESP_MAC_WIFI_STA);		// Get MAC address for WiFi station
 	char baseMacChr[13] = {0};
 	sprintf(baseMacChr, "%02X%02X%02X%02X%02X%02X", baseMac[0], baseMac[1], baseMac[2], baseMac[3], baseMac[4], baseMac[5]);       // Example: B4E62DA8EF6D
-	const char*  _mqttClientName_PJ = (char*)baseMacChr;
-	_mqttClientName =  _mqttClientName_PJ;
+	//const char*  _mqttClientName_PJ = (char*)baseMacChr;
+	
+	//char clientTemp[20];
+
+	//strcpy(clientTemp,_mqttClientName_PJ);
+	//_mqttClientName =  clientTemp;
+	
+	_mqttClientName = (char*)baseMacChr;
+	
+	//_mqttClientName =  "test";
 	
 //end pj added April 26
 }
@@ -442,10 +450,18 @@ if (_enableAuthentication) {
 //message = clientID | ISO UTC time (16 digits)
 // https://www.utctime.net/
 
+// http://www.cplusplus.com/reference/ctime/strftime/
+
+
   time_t now = time(nullptr);   //get current time
   time(&now);
-  char ISOtime[sizeof "2011-10-08T07:07"];
-  strftime(ISOtime, sizeof ISOtime, "%Y-%m-%dT%H:%M", gmtime(&now));
+  char ISOtime[sizeof "2011-10-08T07:07:10"];
+  strftime(ISOtime, sizeof ISOtime, "%Y-%m-%dT%H:%M:%S", gmtime(&now));
+  
+
+//  char ISOtime[sizeof "2011-10-08T07:07"];
+//  strftime(ISOtime, sizeof ISOtime, "%Y-%m-%dT%H:%M", gmtime(&now));
+  
   Serial.println("ISO time");
   Serial.println(now);
   Serial.println(ISOtime);
@@ -455,7 +471,8 @@ if (_enableAuthentication) {
     char msg[400];
   Serial.println("step2");
 
-    strcpy(msg,ISOtime);
+   // strcpy(msg,ISOtime);
+   strncpy (msg,ISOtime,18);
   Serial.println("step3");
   Serial.println(msg);
 
