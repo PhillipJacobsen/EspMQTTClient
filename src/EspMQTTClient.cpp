@@ -469,10 +469,13 @@ if (_enableAuthentication) {
   Serial.println("step1");
 
     char msg[400];
+	msg[0] = '\0';   /* null character manually added */
   Serial.println("step2");
-
+  Serial.println(msg);
+  
    // strcpy(msg,ISOtime);
    strncpy (msg,ISOtime,18);
+   msg[18] = '\0';   /* null character manually added */
   Serial.println("step3");
   Serial.println(msg);
 
