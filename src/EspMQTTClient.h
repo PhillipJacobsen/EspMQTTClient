@@ -3,13 +3,14 @@
 
 #include <PubSubClient.h>
 
+#ifdef _enableArkAuthentication
 #include <arkCrypto.h>
 #include <arkCrypto_esp32.h>  // This is a helper header that includes all the Misc ARK C++ Crypto headers required for this sketch
 #include <arkClient.h>
 using namespace Ark::Crypto;
 using namespace Ark::Crypto::identities;
 using namespace Ark::Crypto::transactions;
-
+#endif
 
 
 

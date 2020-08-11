@@ -443,6 +443,8 @@ if (_enableMACaddress) {
 	
 //end pj added April 26
 }
+
+#ifdef _enableArkAuthentication
 if (_enableAuthentication) {	
 //clientID = 
 //username = public Key
@@ -551,7 +553,7 @@ static const auto PASSPHRASE        = "idle scrub portion party limb unit unveil
  //     buf += signatureString.c_str();   //append the signature
 
 }
-	
+#endif	
 	
 	
 	
